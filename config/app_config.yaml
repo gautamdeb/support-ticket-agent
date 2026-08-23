@@ -1,0 +1,46 @@
+# Application-level configuration for the Support Ticket Triage Agent.
+# Values here are static defaults; secrets/provider selection live in .env.
+
+app:
+  name: "Support Ticket Triage & Resolution Agent"
+  version: "1.0.0"
+
+paths:
+  tickets: "data/tickets/synthetic_tickets.json"
+  ticket_batch: "data/tickets/sample_ticket_batch.json"
+  knowledge_base: "data/knowledge_base"
+  golden_dataset: "data/evaluation/golden_dataset.json"
+  expected_routes: "data/evaluation/expected_routes.json"
+  drafted_replies: "outputs/drafted_replies"
+  audit_logs: "outputs/audit_logs"
+  evaluation_reports: "outputs/evaluation_reports"
+
+rag:
+  chunk_size_tokens: 700        # target 500-800
+  chunk_overlap_tokens: 80      # target 50-100
+  top_k: 4                      # retrieve top 3-5 chunks
+  min_relevance_score: 0.25     # below this a chunk is considered irrelevant
+
+routing:
+  # Confidence thresholds that gate the route decision.
+  auto_resolve_min_confidence: 0.75
+  # If confidence is between these two, run the confidence re-check loop.
+  recheck_low: 0.45
+  recheck_high: 0.75
+  max_recheck_loops: 2          # confidence re-check loop cap
+  max_retrieval_refinements: 2  # retrieval refinement loop cap
+
+hitl:
+  # Every draft goes through human approval. The system NEVER auto-sends.
+  auto_send: false              # HARD-CODED SAFETY INVARIANT - must stay false
+  queue_file: "outputs/drafted_replies/approval_queue.json"
+
+memory:
+  # Per-customer conversation thread memory.
+  store_file: "outputs/audit_logs/customer_threads.json"
+  max_turns_remembered: 20
+
+evaluation:
+  provider: "auto"              # auto -> use Arize if key present, else local
+  groundedness_pass_threshold: 0.7
+  route_accuracy_target: 0.8

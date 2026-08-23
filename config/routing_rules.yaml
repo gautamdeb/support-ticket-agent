@@ -1,0 +1,38 @@
+# Declarative routing configuration.
+#
+# The ordered routing LOGIC lives in code as typed strategy rules
+# (src/agents/routing_rules.py: RuleBook). This file holds only the declarative
+# values those rules read, so behaviour stays predictable and auditable.
+
+# The four allowed routes.
+routes:
+  - AUTO_RESOLVE
+  - ESCALATE
+  - REFUSE
+  - ASK_MORE_INFO
+
+# Ticket categories the agent recognises.
+categories:
+  - refund_request
+  - subscription_cancellation
+  - login_account_access
+  - product_troubleshooting
+  - abusive_message
+
+# Confidence gate for AUTO_RESOLVE (mirrors app_config.routing).
+auto_resolve:
+  min_confidence: 0.75
+  require_policy_support: true
+  require_grounded: true
+
+# Priority order the RuleBook applies its strategies in (documentation of the
+# code chain; safety-decisive rules first, confidence fallbacks last).
+rule_order:
+  - abusive_content
+  - refund_abuse
+  - requires_human_specialist
+  - insufficient_ticket_info
+  - no_policy_found
+  - weak_grounding
+  - confident_resolve
+  - default_escalate

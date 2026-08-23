@@ -1,0 +1,36 @@
+# Model configuration. Provider/keys are resolved from environment variables
+# (see .env.example). This file sets model behaviour defaults.
+
+llm:
+  # Overridden by env LLM_PROVIDER / GROQ_MODEL.
+  provider: "groq"             # groq | mock
+  model: "openai/gpt-oss-20b"
+  temperature: 0.1             # low - support answers must be consistent
+  max_tokens: 800
+  request_timeout_seconds: 60  # per-request timeout (env GROQ_TIMEOUT overrides)
+  max_retries: 2               # retries on transient errors (timeout/connection/5xx)
+  rate_limit_retries: 4        # extra retries for 429s, honouring Retry-After
+  retry_backoff_seconds: 1.5   # linear backoff base between retries
+  # Groq chat models. Run diagnose_groq.py to confirm what your key can access.
+  available_models:
+    - "openai/gpt-oss-20b"
+    - "openai/gpt-oss-120b"
+    - "groq/compound"
+    - "groq/compound-mini"
+    - "qwen/qwen3.6-27b"
+
+embeddings:
+  provider: "local"            # local (sentence-transformers) | mock
+  model: "sentence-transformers/all-MiniLM-L6-v2"
+  dimension: 384
+
+# Per-agent generation overrides (all use the same provider/model unless set).
+agents:
+  sentiment:
+    temperature: 0.0
+  rag_answer:
+    temperature: 0.1
+  triage_router:
+    temperature: 0.0           # routing must be deterministic
+  response_writer:
+    temperature: 0.2

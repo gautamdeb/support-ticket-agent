@@ -1,0 +1,44 @@
+# ---------------------------------------------------------------------------
+# Support Ticket Triage & Resolution Agent - dependencies
+# ---------------------------------------------------------------------------
+# The project is designed to RUN IN MOCK MODE with only the standard library
+# plus pydantic + pyyaml + python-dotenv. Everything else is needed only when
+# you switch LLM_PROVIDER=groq and/or enable the real vector store / Arize.
+# ---------------------------------------------------------------------------
+
+# --- Core (always needed) ---
+pydantic>=2.5
+pyyaml>=6.0
+python-dotenv>=1.0
+
+# --- LangGraph / LangChain orchestration ---
+langgraph>=0.2.0
+langchain>=0.2.0
+langchain-core>=0.2.0
+langchain-groq>=0.1.6          # Groq chat models (the training LLM provider)
+
+# --- LLM provider SDK (Groq) ---
+groq>=0.9.0
+
+# --- RAG: embeddings + vector store ---
+sentence-transformers>=2.6.0   # local embeddings (all-MiniLM-L6-v2) - no API key
+chromadb>=0.5.0                # local persistent vector store
+# faiss-cpu>=1.8.0             # optional alternative vector store
+
+# --- Evaluation / observability ---
+# Pin to the 7.x line: it provides the classic pandas logger
+# (arize.pandas.logger.Client + arize.utils.types) the code and the Arize ML
+# quickstart use. Arize 8.x is a different, restructured SDK.
+arize>=7.19,<8                 # Arize AI - route/confidence logging
+pandas>=2.0                    # required by the Arize pandas logger
+# arize-phoenix>=4.0.0         # optional local eval/tracing UI
+# langsmith>=0.1.0             # optional LangGraph tracing
+
+# --- Web search tool (OPTIONAL - off by default; conflicts with KB-only rule) ---
+# google-search-results>=2.4.2 # SerpAPI client
+
+# --- CLI niceties ---
+rich>=13.0
+
+# --- Tests ---
+pytest>=8.0

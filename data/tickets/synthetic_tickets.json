@@ -1,0 +1,101 @@
+[
+  {
+    "ticket_id": "TCK-1001",
+    "customer_id": "CUST-001",
+    "subject": "Refund request for annual plan",
+    "message": "I was charged for an annual plan yesterday. I forgot to cancel. I haven't used the product since it renewed. Can I get a refund?",
+    "conversation_history": [],
+    "priority": "medium"
+  },
+  {
+    "ticket_id": "TCK-1002",
+    "customer_id": "CUST-002",
+    "subject": "Refund for a charge from last month",
+    "message": "I want a refund for the annual plan you charged me 40 days ago. I don't use it much.",
+    "conversation_history": [],
+    "priority": "medium"
+  },
+  {
+    "ticket_id": "TCK-1003",
+    "customer_id": "CUST-003",
+    "subject": "This is ridiculous",
+    "message": "Your garbage app lost my data AGAIN. You people are complete idiots and I hope you all get fired. Fix it NOW or else.",
+    "conversation_history": [],
+    "priority": "high"
+  },
+  {
+    "ticket_id": "TCK-1004",
+    "customer_id": "CUST-004",
+    "subject": "Refund again",
+    "message": "Give me a refund. I've asked three times this month and I'll keep asking every week until you just give in. I'm still using it daily by the way.",
+    "conversation_history": [
+      {"role": "customer", "message": "Refund please", "timestamp": "2026-08-01T09:00:00Z"},
+      {"role": "customer", "message": "Still waiting on my refund", "timestamp": "2026-08-10T09:00:00Z"}
+    ],
+    "priority": "high"
+  },
+  {
+    "ticket_id": "TCK-1005",
+    "customer_id": "CUST-005",
+    "subject": "Forgot my password",
+    "message": "Hi, I can't remember my password and can't log in. How do I reset it?",
+    "conversation_history": [],
+    "priority": "low"
+  },
+  {
+    "ticket_id": "TCK-1006",
+    "customer_id": "CUST-006",
+    "subject": "Lost my 2FA phone",
+    "message": "I got a new phone and lost my authenticator app, so I can't complete two-factor login. How can I get back in?",
+    "conversation_history": [],
+    "priority": "high"
+  },
+  {
+    "ticket_id": "TCK-1007",
+    "customer_id": "CUST-007",
+    "subject": "How do I cancel?",
+    "message": "I'd like to cancel my subscription so it doesn't renew again. Where do I do that?",
+    "conversation_history": [],
+    "priority": "low"
+  },
+  {
+    "ticket_id": "TCK-1008",
+    "customer_id": "CUST-008",
+    "subject": "App shows a blank screen",
+    "message": "When I open the app I just get a white blank screen and nothing loads. I'm on the latest Chrome.",
+    "conversation_history": [],
+    "priority": "medium"
+  },
+  {
+    "ticket_id": "TCK-1009",
+    "customer_id": "CUST-009",
+    "subject": "it doesn't work",
+    "message": "its broken please help",
+    "conversation_history": [],
+    "priority": "medium"
+  },
+  {
+    "ticket_id": "TCK-1010",
+    "customer_id": "CUST-010",
+    "subject": "Student discount?",
+    "message": "Do you offer a student discount or an educational pricing plan? I'm at university.",
+    "conversation_history": [],
+    "priority": "low"
+  },
+  {
+    "ticket_id": "TCK-1011",
+    "customer_id": "CUST-011",
+    "subject": "Want a refund",
+    "message": "I'd like a refund please.",
+    "conversation_history": [],
+    "priority": "medium"
+  },
+  {
+    "ticket_id": "TCK-1012",
+    "customer_id": "CUST-012",
+    "subject": "Can't access my email to reset password",
+    "message": "I need to reset my password but the email address on my account is my old work email that I can no longer access. Can you change it to my new email?",
+    "conversation_history": [],
+    "priority": "high"
+  }
+]

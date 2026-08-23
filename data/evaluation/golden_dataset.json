@@ -1,0 +1,101 @@
+[
+  {
+    "ticket_id": "TCK-1001",
+    "category": "refund_request",
+    "expected_route": "AUTO_RESOLVE",
+    "must_cite": ["refund_policy.md"],
+    "expected_key_points": [
+      "within the 7-day window",
+      "not actively used"
+    ],
+    "notes": "Charged yesterday, not used -> clearly inside the 7-day refund window."
+  },
+  {
+    "ticket_id": "TCK-1002",
+    "category": "refund_request",
+    "expected_route": "ESCALATE",
+    "must_cite": ["refund_policy.md"],
+    "expected_key_points": ["outside the 7-day window", "escalate"],
+    "notes": "40 days after billing -> outside window -> must escalate, not auto-resolve."
+  },
+  {
+    "ticket_id": "TCK-1003",
+    "category": "abusive_message",
+    "expected_route": "REFUSE",
+    "must_cite": ["abusive_content_policy.md"],
+    "expected_key_points": ["cannot continue while", "resubmit respectfully"],
+    "notes": "Abusive/threatening -> scripted polite refusal."
+  },
+  {
+    "ticket_id": "TCK-1004",
+    "category": "abusive_message",
+    "expected_route": "REFUSE",
+    "must_cite": ["abusive_content_policy.md", "refund_policy.md"],
+    "expected_key_points": ["repeated refund requests", "still using"],
+    "notes": "Refund abuse: repeated requests + active use + stated intent to exploit."
+  },
+  {
+    "ticket_id": "TCK-1005",
+    "category": "login_account_access",
+    "expected_route": "AUTO_RESOLVE",
+    "must_cite": ["account_access_faq.md"],
+    "expected_key_points": ["Forgot password", "reset link", "30 minutes"],
+    "notes": "Standard self-service password reset."
+  },
+  {
+    "ticket_id": "TCK-1006",
+    "category": "login_account_access",
+    "expected_route": "ESCALATE",
+    "must_cite": ["account_access_faq.md"],
+    "expected_key_points": ["2FA", "identity verification", "escalate"],
+    "notes": "Lost 2FA device requires identity verification -> escalate."
+  },
+  {
+    "ticket_id": "TCK-1007",
+    "category": "subscription_cancellation",
+    "expected_route": "AUTO_RESOLVE",
+    "must_cite": ["subscription_policy.md"],
+    "expected_key_points": ["Settings", "Billing", "Manage Plan", "Cancel Subscription"],
+    "notes": "Clear self-service cancellation steps."
+  },
+  {
+    "ticket_id": "TCK-1008",
+    "category": "product_troubleshooting",
+    "expected_route": "AUTO_RESOLVE",
+    "must_cite": ["troubleshooting_faq.md"],
+    "expected_key_points": ["hard-refresh", "clear the browser cache", "incognito"],
+    "notes": "Known troubleshooting path for blank screen."
+  },
+  {
+    "ticket_id": "TCK-1009",
+    "category": "product_troubleshooting",
+    "expected_route": "ASK_MORE_INFO",
+    "must_cite": [],
+    "expected_key_points": ["what", "which", "error"],
+    "notes": "Too vague to act on -> ask clarifying questions."
+  },
+  {
+    "ticket_id": "TCK-1010",
+    "category": "refund_request",
+    "expected_route": "ESCALATE",
+    "must_cite": [],
+    "expected_key_points": ["could not be verified", "escalate"],
+    "notes": "No student-discount policy in the KB -> do not fabricate, escalate."
+  },
+  {
+    "ticket_id": "TCK-1011",
+    "category": "refund_request",
+    "expected_route": "ASK_MORE_INFO",
+    "must_cite": ["refund_policy.md"],
+    "expected_key_points": ["when", "billed", "which plan"],
+    "notes": "Refund with no date/plan -> need info to apply the 7-day rule."
+  },
+  {
+    "ticket_id": "TCK-1012",
+    "category": "login_account_access",
+    "expected_route": "ESCALATE",
+    "must_cite": ["account_access_faq.md"],
+    "expected_key_points": ["identity verification", "cannot change the email", "escalate"],
+    "notes": "Email change requires identity verification -> escalate."
+  }
+]

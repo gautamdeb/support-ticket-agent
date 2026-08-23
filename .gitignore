@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Secrets
+.env
+
+# Local vector store & generated outputs
+data/.chroma/
+outputs/drafted_replies/*.json
+outputs/audit_logs/*.jsonl
+outputs/audit_logs/*.json
+outputs/evaluation_reports/*.json
+outputs/evaluation_reports/*.md
+
+# Notebooks
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
