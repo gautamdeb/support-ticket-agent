@@ -1,4 +1,3 @@
-"""Token-aware chunking."""
 from __future__ import annotations
 
 from ..utils.helpers import app_config, estimate_tokens

@@ -1,4 +1,3 @@
-"""Scripted, polite refusal templates. Refusals are never free-form generated."""
 from __future__ import annotations
 
 TEMPLATES = {

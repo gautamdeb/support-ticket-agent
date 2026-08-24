@@ -1,4 +1,3 @@
-"""Entry point: run the Support Ticket Triage & Resolution Agent over a queue."""
 from __future__ import annotations
 
 import argparse
@@ -21,11 +20,7 @@ def run_pipeline(
     verbose: bool = True,
     container: ServiceContainer | None = None,
 ) -> list[dict[str, Any]]:
-    """Run every ticket through the graph and return the final HITL records.
-
-    Collaborators are supplied by the composition root; a caller (e.g. a test)
-    may inject its own container to substitute providers.
-    """
+    """Run every ticket through the graph and return the final HITL records."""
     container = container or ServiceContainer.build()
     graph = container.flow
     queue = container.review_gate

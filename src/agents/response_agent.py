@@ -1,4 +1,3 @@
-"""Response composer: turns the route decision into the final draft reply."""
 from __future__ import annotations
 
 from ..safety.refusal_templates import get_refusal

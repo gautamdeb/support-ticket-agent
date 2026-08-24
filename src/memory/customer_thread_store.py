@@ -1,4 +1,3 @@
-"""Persistent per-customer conversation thread store."""
 from __future__ import annotations
 
 from datetime import datetime, timezone

@@ -1,4 +1,3 @@
-"""Policy support + information-sufficiency + escalation rules."""
 from src.agents.policy_agent import check_policy
 from src.retrieval.retriever import get_retriever
 from src.safety.escalation_rules import requires_human

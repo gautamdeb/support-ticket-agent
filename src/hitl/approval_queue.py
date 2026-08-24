@@ -1,4 +1,3 @@
-"""Human-in-the-loop approval queue."""
 from __future__ import annotations
 
 from pathlib import Path

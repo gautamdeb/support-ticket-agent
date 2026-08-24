@@ -1,4 +1,3 @@
-"""Project-wide constants and enums."""
 from __future__ import annotations
 
 from enum import Enum

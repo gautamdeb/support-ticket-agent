@@ -1,4 +1,3 @@
-"""Shared pytest fixtures. Forces offline mock mode so tests need no API keys."""
 import os
 import sys
 from pathlib import Path

@@ -1,4 +1,3 @@
-"""Policy agent (second half of 'Sentiment & Policy Check')."""
 from __future__ import annotations
 
 from ..safety.policy_checker import run_policy_check

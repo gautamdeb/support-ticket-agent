@@ -1,82 +1,72 @@
 # Participant Guide
 
-A guided tour for the capstone. Follow it top to bottom.
+A quick walkthrough. You can do all of it in mock mode without any keys; add the
+Groq key when you want the real model.
 
-## 1. Set up
+## Setup
 
-```bash
-python -m venv .venv && source .venv/bin/activate
+```
+python -m venv .venv
+.venv\Scripts\activate
 pip install -r requirements.txt
-cp .env.example .env
+copy .env.example .env
 ```
 
-You can do the entire walkthrough in **mock mode** (no keys). To use the real
-LLM, set in `.env`: `LLM_PROVIDER=groq` and `GROQ_API_KEY=...` (from
-https://console.groq.com/keys). Get the Groq key from the training's
-"Agentic AI Training Readiness" doc.
+For a real run, set `LLM_PROVIDER=groq` and your `GROQ_API_KEY` in `.env`
+(get the key from console.groq.com). Otherwise leave it and it runs in mock mode.
 
-## 2. Run the pipeline
+## Run the queue
 
-```bash
+```
 python -m src.main --all
 ```
 
-You'll see one line per ticket: its route, confidence, groundedness, the
-reviewer's action, and the sources retrieved. Drafts are written to
-`outputs/drafted_replies/` and an audit trail to `outputs/audit_logs/`.
+You'll get one line per ticket with the route, confidence, groundedness, the
+reviewer's action, and which sources were used. Drafts land in
+`outputs/drafted_replies/` and the audit trail in `outputs/audit_logs/`.
 
-## 3. Review drafts like a human would
+## Review the drafts
 
-```bash
-python -m src.main --review none     # draft everything, don't auto-review
-python -m src.hitl.approval_ui_stub  # then approve / edit / reject / escalate
+```
+python -m src.main --review none      # draft only, don't auto-review
+python -m src.hitl.approval_ui_stub   # then approve / edit / reject / escalate
 ```
 
-Nothing is ever sent to a customer — approval only marks a draft **ready** to
-send.
+Approving just marks a draft ready - nothing goes to a customer.
 
-## 4. Read one audit record
+## Look at one audit record
 
-```bash
-head -n 1 outputs/audit_logs/audit_log.jsonl | python -m json.tool
+```
+python -c "import json;print(json.dumps([json.loads(l) for l in open('outputs/audit_logs/audit_log.jsonl')][0], indent=2))"
 ```
 
-Note `route_decision`, `route_reason`, `applied_override`, `confidence_score`,
-`groundedness_score`, `retrieved_sources`, and the `trace` (the step-by-step
-reasoning path). Every record has `auto_sent: false`.
+Note the route, the reason, confidence, groundedness, sources, the step trace,
+and `auto_sent: false`.
 
-## 5. Evaluate
+## Evaluate
 
-```bash
+```
 python -m src.evaluation.arize_evaluator
-cat outputs/evaluation_reports/evaluation_report.md
 ```
 
-Compare the agent's routes to `data/evaluation/expected_routes.json`.
+Prints route accuracy against `data/evaluation/expected_routes.json` and writes
+the report to `outputs/evaluation_reports/`.
 
-## 6. Things to try (suggested exercises)
+## Things to try
 
-- **Swap the model.** Set `GROQ_MODEL=openai/gpt-oss-20b` and re-run. Does route
-  accuracy hold?
-- **Break grounding.** Add a ticket whose answer isn't in the KB. Confirm it
-  escalates rather than fabricating.
-- **Tune thresholds.** Change `auto_resolve_min_confidence` in
-  `config/app_config.yaml` and watch AUTO_RESOLVE vs ESCALATE shift.
-- **Add a policy.** Drop a new `*.md` into `data/knowledge_base/`, add a ticket,
-  and see it retrieved and cited.
-- **Add an eval case.** Extend `data/evaluation/expected_routes.json` and the
-  golden dataset, then re-run the evaluator.
-- **Turn on Arize.** Add `ARIZE_API_KEY` + `ARIZE_SPACE_ID` and re-run to log
-  predictions.
+- Swap the model with `GROQ_MODEL=openai/gpt-oss-120b` and re-run.
+- Add a ticket whose answer isn't in the KB and check it escalates.
+- Change `auto_resolve_min_confidence` in `config/app_config.yaml` and watch the
+  auto-resolve/escalate split move.
+- Drop a new policy `.md` into `data/knowledge_base/`, add a matching ticket, and
+  see it retrieved and cited.
 
-## 7. Where things live
+## Where to change things
 
-| You want to change… | Edit… |
-|---|---|
-| Routing rules / overrides | `config/routing_rules.yaml`, `src/agents/triage_agent.py` |
-| RAG params | `config/app_config.yaml` (`rag:`) |
-| The prompts | `src/agents/*.py` (the `_SYSTEM` strings) |
-| Refusal wording | `src/safety/refusal_templates.py` |
-| Escalation triggers | `src/safety/escalation_rules.py` |
-| The KB | `data/knowledge_base/*.md` |
-| The tickets | `data/tickets/*.json` |
+- routing logic: `src/agents/routing_rules.py`
+- RAG settings: `config/app_config.yaml`
+- prompts: the `_SYSTEM` strings in `src/agents/`
+- refusal wording: `src/safety/refusal_templates.py`
+- escalation triggers: `src/safety/escalation_rules.py`
+- knowledge base: `data/knowledge_base/`
+- tickets: `data/tickets/`

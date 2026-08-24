@@ -1,4 +1,3 @@
-"""Pydantic data models for tickets, retrieval, decisions and HITL records."""
 from __future__ import annotations
 
 from datetime import datetime, timezone

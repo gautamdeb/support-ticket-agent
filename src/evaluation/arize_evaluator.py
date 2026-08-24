@@ -1,4 +1,3 @@
-"""Evaluation orchestrator with optional Arize AI integration."""
 from __future__ import annotations
 
 from datetime import datetime, timezone

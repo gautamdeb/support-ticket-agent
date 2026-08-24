@@ -1,4 +1,3 @@
-"""Audit logging - the final node in the flow."""
 from __future__ import annotations
 
 from datetime import datetime, timezone

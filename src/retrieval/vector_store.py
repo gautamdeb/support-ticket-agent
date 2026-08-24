@@ -1,4 +1,3 @@
-"""Embeddings + vector store."""
 from __future__ import annotations
 
 import hashlib
@@ -62,7 +61,7 @@ def cosine(a: list[float], b: list[float]) -> float:
     return dot / (na * nb)
 
 class MemoryVectorStore:
-    """Pure-python cosine store. Always available; no extra dependencies."""
+    """Pure-python cosine store."""
 
     def __init__(self, embedder: Embedder) -> None:
         self.embedder = embedder

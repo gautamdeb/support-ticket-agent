@@ -1,129 +1,103 @@
 # Support Ticket Triage & Resolution Agent
 
-An AI support agent that reads customer tickets and, for each one, decides
-**Auto-Resolve / Escalate / Refuse / Ask for More Information** and drafts a
-reply **for human approval**. Built for the Agentic AI training capstone.
+An agent that reads a support ticket and decides what to do with it:
+auto-resolve, escalate, refuse, or ask for more info. It drafts the reply but
+never sends anything - a human approves first. Policy answers only come from the
+knowledge base; if there's no policy for something, it escalates instead of
+making something up.
 
-> **Safety principle (hard-wired):** replies are **drafts only and are never
-> auto-sent**. Policies are quoted **only** from the knowledge base. If no
-> policy is found, the agent says so and **escalates** rather than fabricating.
-> Refund-abuse and abusive messages are **refused** with a polite scripted reply.
+Built as the capstone for the Agentic AI training.
 
----
+## What it uses
 
-## Stack (mapped to the training's provided accounts)
+- Groq for the LLM (sentiment, drafting, the routing decision)
+- sentence-transformers for embeddings (Groq doesn't do embeddings, so these run
+  locally - no extra key needed)
+- Chroma for the vector store (falls back to an in-memory one if Chroma isn't
+  installed)
+- LangGraph for the flow (there's a plain fallback runner too, so it still works
+  without langgraph)
+- Arize for the evaluation logging
 
-| Layer | Choice | Why |
-|---|---|---|
-| LLM | **Groq** (`llama-3.3-70b-versatile`, `openai/gpt-oss-20b`, …) | The training's provided LLM key. OpenAI-compatible. |
-| Embeddings | **local `sentence-transformers`** (`all-MiniLM-L6-v2`) | Groq has **no** embeddings API, so we embed locally — no extra key. |
-| Vector store | **Chroma** (falls back to an in-memory cosine store) | Local, persistent, inspectable. |
-| Orchestration | **LangGraph** (falls back to a built-in runner) | Conditional routing + loops. |
-| Evaluation | **Arize AI** (falls back to a local evaluator) | Route/confidence logging + groundedness evaluation. |
-| Tracing | **LangSmith** (optional) | Set `LANGCHAIN_TRACING_V2=true`. |
-| Web search | **SerpAPI** (optional, **off**) | Conflicts with the KB-only rule; disabled by default. |
+You only need a Groq key to actually run it. Add an Arize key when you want the
+eval pushed to the dashboard. With no keys at all it runs in a mock mode that's
+handy for tests.
 
-**You only need the Groq key to run it for real.** With no keys at all it runs
-in a deterministic **mock mode** so you can exercise the whole flow offline.
+## Setup
 
----
-
-## Quick start
-
-```bash
-python -m venv .venv && source .venv/bin/activate
+```
+python -m venv .venv
+.venv\Scripts\activate            # macOS/Linux: source .venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env            # then edit .env
-
-# Run offline (mock mode) — no keys needed:
-python -m src.main --all
-
-# Run for real with Groq:
-#   in .env set  LLM_PROVIDER=groq  and  GROQ_API_KEY=...
-python -m src.main --all
+copy .env.example .env            # then edit .env
 ```
 
-Useful commands:
+In `.env` set at least:
 
-```bash
-python -m src.main                     # sample batch, auto-reviewed
-python -m src.main --all               # full 12-ticket synthetic queue
-python -m src.main --ticket TCK-1001   # a single ticket
-python -m src.main --review cli         # review drafts interactively
-python -m src.main --review none        # draft only; leave the HITL queue pending
-python -m src.hitl.approval_ui_stub     # open the reviewer console on the queue
-python -m src.evaluation.arize_evaluator# run the evaluation report
-pytest -q                               # run the test suite (mock mode)
+```
+LLM_PROVIDER=groq
+GROQ_API_KEY=your-key
+GROQ_MODEL=openai/gpt-oss-20b
+EMBEDDINGS_PROVIDER=local
+VECTOR_STORE=chroma
 ```
 
----
+Add `ARIZE_API_KEY` and `ARIZE_SPACE_ID` if you want evaluation logged to Arize.
+
+## Running it
+
+```
+python -m src.main                    # sample batch
+python -m src.main --all              # full 12-ticket queue
+python -m src.main --ticket TCK-1001  # one ticket
+python -m src.main --review cli        # review the drafts yourself
+python -m src.evaluation.arize_evaluator   # score against the golden set
+python -m src.hitl.approval_ui_stub    # open the reviewer console
+pytest                                 # run the tests (no keys needed)
+```
+
+`diagnose_groq.py` is a small helper that checks your key works and lists the
+models it can reach - run `python diagnose_groq.py` if the model call fails.
 
 ## The flow
 
 ```
-Ticket In
-  -> Sentiment & Policy Check      (sentiment/abuse + categorise + retrieve + policy check)
-  -> RAG Answer Draft              (grounded draft from KB chunks; groundedness + confidence)
-  -> LangGraph Route Decision      (base proposal + deterministic safety overrides)
-  -> Confidence Re-check Loop      (borderline -> widen retrieval, re-evaluate)
-  -> HITL Approval                 (approve / edit / reject / regenerate / escalate)
-  -> Audit Log                     (immutable JSONL record; never auto-sends)
+Ticket -> sentiment & policy check -> RAG draft -> route decision
+       -> confidence re-check loop -> human approval -> audit log
 ```
 
-The route decision is a **base proposal** (LLM or heuristic) followed by
-**deterministic overrides** from `config/routing_rules.yaml`, so safety-critical
-routing is predictable and auditable regardless of the model.
+The route decision starts from the LLM (or a keyword fallback) and then goes
+through a set of rules that enforce the hard requirements: abuse gets a scripted
+refusal, no policy means escalate, missing details means ask, and auto-resolve
+only fires when the answer is grounded and confident enough.
 
----
-
-## Project layout
+## Layout
 
 ```
-config/            app / model / routing_rules YAML
+config/            app / model / routing settings
 data/
-  tickets/         synthetic ticket queue + a small demo batch
-  knowledge_base/  Markdown policies & FAQs (the ONLY source of policy)
-  evaluation/      golden_dataset.json + expected_routes.json
+  tickets/         the synthetic ticket queue
+  knowledge_base/  the markdown policies and FAQs
+  evaluation/      golden routes + dataset
 src/
-  graph/           LangGraph state, nodes, edges, support_graph (+ fallback runner)
-  agents/          sentiment, rag, policy, triage(router), response
-  retrieval/       document loader, chunking, embeddings + vector store, retriever
-  memory/          per-customer thread store + conversation memory
-  safety/          policy_checker, escalation_rules, abuse_detection, refusal_templates
-  hitl/            approval_queue, reviewer_actions, approval_ui_stub (CLI)
-  evaluation/      arize_evaluator, route/groundedness/confidence evals
-  logging/         audit_logger (JSONL), trace_logger (ReAct-style steps)
-  utils/           schemas (pydantic), llm_client (Groq/mock), helpers, constants
-notebooks/         RAG, LangGraph flow, and evaluation walkthroughs
-tests/             pytest suite (runs fully offline)
-outputs/           drafted_replies / audit_logs / evaluation_reports
+  graph/           LangGraph state, nodes, edges, graph builder
+  agents/          sentiment, rag, policy, triage, response, routing rules
+  retrieval/       loader, chunking, embeddings + vector store, retriever
+  memory/          per-customer thread store
+  safety/          policy check, escalation triggers, abuse detection, refusals
+  hitl/            approval queue, reviewer actions, review console
+  evaluation/      route / groundedness / confidence eval + Arize logging
+  logging/         audit log + step trace
+  utils/           schemas, llm client, interfaces, container, helpers
+tests/             pytest suite
 docs/              architecture, participant guide, rubric, demo script
 ```
 
----
+## Safety rules
 
-## How the safety rules are enforced
+Nothing is ever auto-sent - approval only marks a draft ready for a person to
+send. Refusals come from fixed templates, not the model. An unknown category has
+no policy, so it escalates. These are enforced in the routing rules, not left to
+the model to remember.
 
-- **Never auto-send** — `AUTO_SEND_ALLOWED = False`; every audit record carries
-  `auto_sent: false`; approval only marks a draft *ready for a human to send*.
-- **KB-only policy** — the RAG agent is instructed to answer *only* from
-  retrieved context and cite sources; an **UNKNOWN** category has no policy file
-  and always escalates.
-- **Documented escalation** — refund-outside-window, 2FA reset, email change,
-  etc. are encoded in `safety/escalation_rules.py` straight from the policies.
-- **Refuse abuse** — lexical abuse / refund-abuse detection forces `REFUSE`
-  with a **scripted** template (never free-form).
-
----
-
-## Configuration
-
-All behaviour is in `config/*.yaml` and `.env`:
-
-- `config/app_config.yaml` — RAG params (chunk 500–800 tok, overlap 50–100,
-  top-k 3–5), confidence thresholds, loop caps, paths.
-- `config/model_config.yaml` — provider/model/temperature per agent.
-- `config/routing_rules.yaml` — the four routes and the deterministic overrides.
-
-See `docs/architecture.md` for the full design and `docs/participant_guide.md`
-for a guided tour.
+More detail in `docs/architecture.md`.

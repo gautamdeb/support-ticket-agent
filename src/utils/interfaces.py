@@ -1,15 +1,8 @@
-"""Abstract ports the rest of the system depends on.
-
-Concrete adapters (Groq/mock client, Chroma/in-memory store, JSON queue, ...)
-satisfy these Protocols structurally, so high-level policy code depends on
-behaviour rather than on any specific implementation.
-"""
 from __future__ import annotations
 
 from typing import Optional, Protocol, Sequence, runtime_checkable
 
 from .schemas import RetrievedChunk, RouteDecision, Ticket
-
 
 @runtime_checkable
 class LanguageModelPort(Protocol):
@@ -23,7 +16,6 @@ class LanguageModelPort(Protocol):
 
     def describe(self) -> str: ...
 
-
 @runtime_checkable
 class EmbeddingPort(Protocol):
     def embed(self, texts: Sequence[str]) -> list[list[float]]: ...
@@ -32,7 +24,6 @@ class EmbeddingPort(Protocol):
 
     def describe(self) -> str: ...
 
-
 @runtime_checkable
 class VectorStorePort(Protocol):
     def add(self, chunks: Sequence[dict]) -> None: ...
@@ -40,7 +31,6 @@ class VectorStorePort(Protocol):
     def query(self, text: str, top_k: int) -> list[RetrievedChunk]: ...
 
     def count(self) -> int: ...
-
 
 @runtime_checkable
 class RetrieverPort(Protocol):
@@ -51,13 +41,11 @@ class RetrieverPort(Protocol):
 
     def describe(self) -> str: ...
 
-
 @runtime_checkable
 class ConversationMemoryPort(Protocol):
     def refund_requests_last_90d(self, ticket: Ticket) -> int: ...
 
     def rendered(self, ticket: Ticket) -> str: ...
-
 
 @runtime_checkable
 class ReviewGatePort(Protocol):
@@ -69,16 +57,13 @@ class ReviewGatePort(Protocol):
 
     def update(self, record: dict) -> None: ...
 
-
 @runtime_checkable
 class AuditSinkPort(Protocol):
     def __call__(self, record: dict) -> dict: ...
 
-
 @runtime_checkable
 class RoutingRulePort(Protocol):
-    """One link in the routing chain: claim a ticket with a RouteDecision, or
-    return None to defer to the next rule."""
+    """One link in the routing chain: claim a ticket with a RouteDecision, or."""
 
     name: str
 

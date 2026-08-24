@@ -1,4 +1,3 @@
-"""Graph node functions."""
 from __future__ import annotations
 
 from typing import Any
@@ -85,7 +84,7 @@ def rag_answer_node(state: dict[str, Any]) -> dict[str, Any]:
     }
 
 def route_decision_node(state: dict[str, Any]) -> dict[str, Any]:
-    """'LangGraph Route Decision' - base proposal + safety overrides."""
+    """'LangGraph Route Decision'."""
     signals = {
         "confidence_score": state.get("confidence_score", 0.0),
         "groundedness_score": state.get("groundedness_score", 0.0),
@@ -132,7 +131,7 @@ def compose_node(state: dict[str, Any]) -> dict[str, Any]:
     return {"draft": draft}
 
 def audit_node(state: dict[str, Any]) -> dict[str, Any]:
-    """Write the audit record and update customer memory. NEVER auto-sends."""
+    """Write the audit record and update customer memory."""
     tr = _tracer(state)
     if tr:
         state["trace"] = tr.as_list()

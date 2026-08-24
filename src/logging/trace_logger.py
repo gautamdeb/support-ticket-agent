@@ -1,4 +1,3 @@
-"""Lightweight per-ticket trace logger (ReAct-style step trace)."""
 from __future__ import annotations
 
 import time

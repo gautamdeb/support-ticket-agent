@@ -1,4 +1,3 @@
-"""End-to-end routing accuracy against the golden dataset (mock mode)."""
 from src.evaluation.route_accuracy_eval import evaluate_routes
 
 def test_all_routes_match_golden(pipeline_results, expected_routes):

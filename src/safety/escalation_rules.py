@@ -1,4 +1,3 @@
-"""Documented escalation triggers derived directly from the knowledge base."""
 from __future__ import annotations
 
 import re

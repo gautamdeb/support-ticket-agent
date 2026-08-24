@@ -1,9 +1,3 @@
-"""Triage agent: categorisation, confidence scoring, and the route decision.
-
-Routing is delegated to a RuleBook (Strategy + Chain of Responsibility). This
-module keeps the classifier, the confidence model, and a thin `decide_route`
-entry point whose signature is unchanged for the graph and tests.
-"""
 from __future__ import annotations
 
 from ..utils.constants import Category
@@ -28,7 +22,6 @@ _CATEGORY_SYSTEM = (
     "pricing, features, or anything not listed) - do NOT force an approximate "
     "match. Return strict JSON: {\"category\": \"...\"}."
 )
-
 
 def categorize(ticket: Ticket, is_abusive: bool = False,
                client: LLMClient | None = None) -> str:
@@ -71,7 +64,6 @@ def compute_confidence(signals: dict) -> float:
     return 0.4
 
 _RULE_BOOK = RuleBook()
-
 
 def decide_route(signals: dict, rule_book: RuleBook | None = None) -> RouteDecision:
     rules = routing_rules()

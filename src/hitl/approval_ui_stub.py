@@ -1,4 +1,3 @@
-"""Minimal CLI reviewer console for the approval queue."""
 from __future__ import annotations
 
 from ..utils.constants import ReviewerAction

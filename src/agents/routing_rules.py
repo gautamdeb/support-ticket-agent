@@ -1,11 +1,3 @@
-"""Routing expressed as a Chain of Responsibility of typed Strategy rules.
-
-Each rule inspects the decision signals and either claims the ticket with a
-RouteDecision or defers by returning None. The RuleBook runs them in priority
-order; the first claim wins. Adding or reordering behaviour means adding a class
-(Open/Closed), and there is no string evaluation anywhere - which removes the
-class of bug that lived in the old YAML `when:` expressions.
-"""
 from __future__ import annotations
 
 from typing import Optional
@@ -14,7 +6,6 @@ from ..utils.constants import Category, Route
 from ..utils.schemas import RouteDecision
 
 GROUNDING_FLOOR = 0.4
-
 
 class HostileConductRule:
     name = "abusive_content"
@@ -26,7 +17,6 @@ class HostileConductRule:
                                  applied_override=self.name)
         return None
 
-
 class RefundGamingRule:
     name = "refund_abuse"
 
@@ -36,7 +26,6 @@ class RefundGamingRule:
                                  reason="Suspected refund abuse - scripted refusal.",
                                  applied_override=self.name)
         return None
-
 
 class SpecialistRequiredRule:
     name = "requires_human_specialist"
@@ -49,7 +38,6 @@ class SpecialistRequiredRule:
                                  applied_override=self.name)
         return None
 
-
 class MissingDetailRule:
     name = "insufficient_ticket_info"
 
@@ -59,7 +47,6 @@ class MissingDetailRule:
                                  reason="Ticket lacks the detail needed to act.",
                                  applied_override=self.name)
         return None
-
 
 class NoGoverningPolicyRule:
     name = "no_policy_found"
@@ -71,7 +58,6 @@ class NoGoverningPolicyRule:
                                  applied_override=self.name)
         return None
 
-
 class WeakGroundingRule:
     name = "weak_grounding"
 
@@ -82,10 +68,8 @@ class WeakGroundingRule:
                                  applied_override=self.name)
         return None
 
-
 class ConfidentResolveRule:
-    """A confidence-based claim - deliberately leaves applied_override unset so
-    the confidence re-check loop can still revisit a borderline decision."""
+    """A confidence-based claim."""
 
     name = "confident_resolve"
 
@@ -95,7 +79,6 @@ class ConfidentResolveRule:
                                  reason="Grounded, policy-backed and confident.")
         return None
 
-
 class DefaultEscalateRule:
     name = "default_escalate"
 
@@ -103,9 +86,8 @@ class DefaultEscalateRule:
         return RouteDecision(route=Route.ESCALATE, confidence_score=s["confidence_score"],
                              reason="Not confident enough to auto-resolve.")
 
-
 class RuleBook:
-    """Ordered routing chain. Safety-decisive rules first, fallbacks last."""
+    """Ordered routing chain."""
 
     def __init__(self, rules: Optional[list] = None) -> None:
         self._rules = rules or [

@@ -1,4 +1,3 @@
-"""Conversation memory for a single ticket run."""
 from __future__ import annotations
 
 from ..utils.helpers import app_config

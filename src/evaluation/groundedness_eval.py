@@ -1,4 +1,3 @@
-"""Groundedness scoring: how much of the draft is supported by retrieved context."""
 from __future__ import annotations
 
 import re

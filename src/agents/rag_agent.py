@@ -1,4 +1,3 @@
-"""RAG answer agent."""
 from __future__ import annotations
 
 from ..evaluation.groundedness_eval import groundedness_score

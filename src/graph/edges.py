@@ -1,4 +1,3 @@
-"""Declarative edge specification, shared by both graph builders."""
 from __future__ import annotations
 
 from . import nodes

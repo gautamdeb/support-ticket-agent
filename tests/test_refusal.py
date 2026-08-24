@@ -1,4 +1,3 @@
-"""Abuse detection and scripted refusal behaviour."""
 from src.safety.abuse_detection import detect_abuse, detect_refund_abuse
 from src.safety.refusal_templates import get_refusal
 

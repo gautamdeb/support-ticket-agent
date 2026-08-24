@@ -1,4 +1,3 @@
-"""Abuse and refund-abuse detection."""
 from __future__ import annotations
 
 import re

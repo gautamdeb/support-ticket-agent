@@ -1,4 +1,3 @@
-"""Route-accuracy evaluation against the golden dataset / expected_routes."""
 from __future__ import annotations
 
 from collections import defaultdict

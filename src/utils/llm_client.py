@@ -1,4 +1,3 @@
-"""Provider-agnostic LLM client."""
 from __future__ import annotations
 
 import json
@@ -11,7 +10,6 @@ from .helpers import env, model_config
 
 _RETRY_AFTER = re.compile(r"try again in\s*([\d.]+)\s*s", re.IGNORECASE)
 
-
 def _transient_error_types() -> tuple:
     """Groq exception classes that are worth retrying (network/rate/5xx)."""
     try:
@@ -22,7 +20,6 @@ def _transient_error_types() -> tuple:
     except Exception:
         return (Exception,)
 
-
 def _rate_limit_type():
     try:
         from groq import RateLimitError
@@ -31,13 +28,11 @@ def _rate_limit_type():
     except Exception:
         return None
 
-
 def _suggested_wait(exc: Exception, fallback: float, cap: float = 20.0) -> float:
-    """Seconds to wait before retrying a rate-limited call: prefer the API's
-    Retry-After header, then the 'try again in Ns' hint, else the fallback."""
+    """Seconds to wait before retrying a rate-limited call: prefer the API's."""
     header = None
     try:
-        header = exc.response.headers.get("retry-after")  # type: ignore[attr-defined]
+        header = exc.response.headers.get("retry-after")
     except Exception:
         header = None
     if header:
@@ -49,7 +44,6 @@ def _suggested_wait(exc: Exception, fallback: float, cap: float = 20.0) -> float
     if match:
         return min(float(match.group(1)) + 0.5, cap)
     return min(fallback, cap)
-
 
 class LLMClient:
     def __init__(self) -> None:
@@ -79,7 +73,6 @@ class LLMClient:
         try:
             from groq import Groq
 
-            # Our own retry loop owns retries/backoff, so disable the SDK's.
             self._client = Groq(api_key=api_key, timeout=self.timeout, max_retries=0)
             self._transient = _transient_error_types()
             self._rate_limit = _rate_limit_type()
@@ -100,7 +93,7 @@ class LLMClient:
         max_tokens: Optional[int] = None,
         json_mode: bool = False,
     ) -> str:
-        """Single-turn chat completion. Only call when `available` is True."""
+        """Single-turn chat completion."""
         if not self.available:
             raise RuntimeError("LLMClient.chat called while provider is mock/unavailable.")
         kwargs = {
@@ -126,12 +119,11 @@ class LLMClient:
                 last_exc = exc
                 is_rate_limit = self._rate_limit is not None and isinstance(exc, self._rate_limit)
                 if is_rate_limit and attempt <= self.rate_limit_retries:
-                    # Pace under the rate limit using the API's own hint.
                     time.sleep(_suggested_wait(exc, self.retry_backoff * attempt))
                     continue
                 if (not is_rate_limit and isinstance(exc, self._transient)
                         and attempt <= self.max_retries):
-                    time.sleep(self.retry_backoff * attempt)  # linear backoff
+                    time.sleep(self.retry_backoff * attempt)
                     continue
                 break
 
@@ -143,7 +135,7 @@ class LLMClient:
         raise last_exc
 
     def chat_json(self, system: str, user: str, temperature: Optional[float] = None) -> dict:
-        """Chat expecting a JSON object back. Returns {} on parse failure."""
+        """Chat expecting a JSON object back."""
         raw = self.chat(system, user, temperature=temperature, json_mode=True)
         try:
             return json.loads(raw)

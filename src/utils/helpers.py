@@ -1,4 +1,3 @@
-"""Small shared helpers: config loading, env access, JSON IO, token estimate."""
 from __future__ import annotations
 
 import json

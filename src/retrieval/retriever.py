@@ -1,4 +1,3 @@
-"""High-level retriever: builds the index and serves top-k chunks."""
 from __future__ import annotations
 
 from typing import Optional

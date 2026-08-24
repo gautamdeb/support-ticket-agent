@@ -1,4 +1,3 @@
-"""Human-in-the-loop approval queue and reviewer actions."""
 from src.hitl.approval_queue import ApprovalQueue
 from src.hitl.reviewer_actions import apply_reviewer_action, auto_review
 from src.utils.constants import ReviewerAction

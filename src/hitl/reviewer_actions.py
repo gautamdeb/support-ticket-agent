@@ -1,4 +1,3 @@
-"""Apply a reviewer's decision to a queued draft."""
 from __future__ import annotations
 
 from datetime import datetime, timezone

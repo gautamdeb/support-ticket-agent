@@ -1,4 +1,3 @@
-"""Sentiment & abuse agent (first half of 'Sentiment & Policy Check')."""
 from __future__ import annotations
 
 from ..safety.abuse_detection import detect_abuse, detect_refund_abuse

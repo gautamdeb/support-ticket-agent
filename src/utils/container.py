@@ -1,9 +1,3 @@
-"""Composition root.
-
-The one place the object graph is assembled: concrete adapters are chosen here
-and handed to collaborators, so every other module depends only on the ports in
-`interfaces.py`. Swapping a provider or store is a change confined to this file.
-"""
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -19,7 +13,6 @@ from .interfaces import (
     ConversationMemoryPort, LanguageModelPort, RetrieverPort, ReviewGatePort,
 )
 from .llm_client import get_llm_client
-
 
 @dataclass
 class ServiceContainer:

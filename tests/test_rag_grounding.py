@@ -1,4 +1,3 @@
-"""RAG retrieval, chunking and groundedness."""
 from src.evaluation.groundedness_eval import groundedness_score
 from src.retrieval.chunking import chunk_documents
 from src.retrieval.document_loader import load_documents
